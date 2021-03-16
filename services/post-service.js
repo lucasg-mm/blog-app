@@ -1,6 +1,6 @@
 const Post = require("../models/post-model");
 
-// --- GET METHODS ---
+// --- GET ---
 
 // Fetches all the posts in the db
 exports.getAllPosts = async () => {
@@ -10,7 +10,7 @@ exports.getAllPosts = async () => {
   } catch (error) {
     console.log("Could not fetch posts!");
     console.log(error);
-    return -1; // return error code
+    throw error;
   }
 };
 
@@ -20,11 +20,11 @@ exports.getById = async (postId) => {
     const foundPost = await Post.findById(postId).exec();
   } catch (error) {
     console.log(error);
-    return -1;
+    throw error;
   }
 };
 
-// --- POST METHODS ---
+// --- POST ---
 
 // Creates one new post. expects an object called 'data'
 // 'data' should have the properties: title, body
@@ -47,12 +47,11 @@ exports.createPost = async (data) => {
     console.log("Could not create post");
     console.log(error);
 
-    // return error code
-    return -1;
+    throw error;
   }
 };
 
-// --- PATCH METHODS ---
+// --- PATCH ---
 
 // Updates a post with a given id
 exports.updatePostById = async (postId, post) => {
@@ -68,8 +67,7 @@ exports.updatePostById = async (postId, post) => {
     console.log("Could not update post!");
     console.log(error);
 
-    //return error code
-    return -1;
+    throw error;
   }
 };
 
@@ -85,8 +83,7 @@ exports.deletePostById = async (postId) => {
     console.log("Could not delete post!");
     console.log(error);
 
-    //return error code
-    return -1;
+    throw error;
   }
 };
 
@@ -100,7 +97,6 @@ exports.deleteAllPosts = async () => {
     console.log("Could not delete posts!");
     console.log(error);
 
-    //return error code
-    return -1;
+    throw error;
   }
 };
