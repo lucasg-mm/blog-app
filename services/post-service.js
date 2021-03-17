@@ -2,32 +2,50 @@ const Post = require("../models/post-model");
 
 // --- GET ---
 
-// Fetches all the posts in the db
+/**
+ * DESCRIPTION: Fetches every post in the db.
+ * RETURNS: array of objects (empty if there are no posts).
+ * THROWS: error in case of database error.
+ */
 exports.getAllPosts = async () => {
   try {
     const allPosts = await Post.find().exec();
     return allPosts;
   } catch (error) {
-    console.log("Could not fetch posts!");
+    console.log("DATABASE ERROR! Could not fetch posts!");
     console.log(error);
+
     throw error;
   }
 };
 
-// Fetches article by id
-exports.getById = async (postId) => {
+/**
+ * DESCRIPTION: fetches post by id.
+ * PARAMS: postId - id of the post to be looked for.
+ * RETURNS: - the found post
+ *          - if the post wasn't found: null
+ * THROWS: error in case of database error.
+ */
+exports.getPostById = async (postId) => {
   try {
     const foundPost = await Post.findById(postId).exec();
+    return foundPost;
   } catch (error) {
+    console.log("DATABASE ERROR! Could not fetch post!");
     console.log(error);
+
     throw error;
   }
 };
 
 // --- POST ---
 
-// Creates one new post. expects an object called 'data'
-// 'data' should have the properties: title, body
+/**
+ * DESCRIPTION: creates one new post.
+ * PARAMS: data - object with 'title' and 'body' properties.
+ * RETURNS: the newly created post.
+ * THROWS: error in case of database error.
+ */
 exports.createPost = async (data) => {
   try {
     // creates new post with the data
@@ -44,7 +62,7 @@ exports.createPost = async (data) => {
     return createdPost;
   } catch (error) {
     // in case of error...
-    console.log("Could not create post");
+    console.log("DATABASE ERROR! Could not create post");
     console.log(error);
 
     throw error;
@@ -53,7 +71,13 @@ exports.createPost = async (data) => {
 
 // --- PATCH ---
 
-// Updates a post with a given id
+/**
+ * DESCRIPTION: Updates a post with a given id.
+ * PARAMS: postId - id from the post to be updated.
+ *         post - object with 'title' and 'body' properties.
+ * RETURNS: true if the post was found, and false otherwise.
+ * THROWS: error in case of database error.
+ */
 exports.updatePostById = async (postId, post) => {
   try {
     post.date = new Date().now();
@@ -61,10 +85,12 @@ exports.updatePostById = async (postId, post) => {
       { id: postId },
       { $set: post }
     ).exec();
-    return updateResponse;
+
+    // returns true if one doc was found
+    return updateResponse.n === 1;
   } catch (error) {
     // in case of error...
-    console.log("Could not update post!");
+    console.log("DATABASE ERROR! Could not update post!");
     console.log(error);
 
     throw error;
@@ -73,28 +99,38 @@ exports.updatePostById = async (postId, post) => {
 
 // --- DELETE METHODS ---
 
-// Deletes a post with a given id
+/**
+ * DESCRIPTION: deletes a post with a given id
+ * PARAMS: postId - id from the post to be deleted.
+ * RETURNS: true if the post was deleted, and false otherwise.
+ * THROWS: error in case of database error.
+ */
 exports.deletePostById = async (postId) => {
   try {
     const deleteResponse = await Post.deleteOne({ id: postId }).exec();
-    return deleteResponse;
+    return deleteResponse.deletedCount === 1;
   } catch (error) {
     // in case of error...
-    console.log("Could not delete post!");
+    console.log("DATABASE ERROR! Could not delete post!");
     console.log(error);
 
     throw error;
   }
 };
 
-// Delete every post in the db
+/**
+ * DESCRIPTION: deletes a post with a given id
+ * PARAMS: postId - id from the post to be deleted.
+ * RETURNS: true if the posts were deleted, and false otherwise.
+ * THROWS: error in case of database error.
+ */
 exports.deleteAllPosts = async () => {
   try {
     const deleteResponse = await Post.deleteMany({}).exec();
-    return deleteResponse;
+    return deleteResponse.ok === 1;
   } catch (error) {
     // in case of error...
-    console.log("Could not delete posts!");
+    console.log("DATABASE ERROR! Could not delete posts!");
     console.log(error);
 
     throw error;

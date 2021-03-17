@@ -7,4 +7,4 @@ const postSchema = new mongoose.Schema({
   date: { type: Date, required: true },
 });
 
-module.exports = new mongoose.model("Post", articleSchema);
+module.exports = new mongoose.model("Post", postSchema);
