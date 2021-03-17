@@ -63,7 +63,7 @@ exports.apiCreatePost = async (req, res, next) => {
     // data from the post to be created
     const data = {
       title: req.body.title,
-      body: req.body.content,
+      content: req.body.content,
     };
 
     const createdPost = await postService.createPost(data);
@@ -86,11 +86,11 @@ exports.apiUpdatePostById = async (req, res, next) => {
     // data from the post to be created
     const data = {
       title: req.body.title,
-      body: req.body.content,
+      content: req.body.content,
     };
     const postId = req.params.postId;
 
-    const updateResponse = await postService.updatePost(postId, data);
+    const updateResponse = await postService.updatePostById(postId, data);
     if (updateResponse) {
       res.json({ message: "Success!" });
     } else {

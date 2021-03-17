@@ -42,7 +42,7 @@ exports.getPostById = async (postId) => {
 
 /**
  * DESCRIPTION: creates one new post.
- * PARAMS: data - object with 'title' and 'body' properties.
+ * PARAMS: data - object with 'title' and 'content' properties.
  * RETURNS: the newly created post.
  * THROWS: error in case of database error.
  */
@@ -51,8 +51,8 @@ exports.createPost = async (data) => {
     // creates new post with the data
     const newPost = new Post({
       title: data.title,
-      body: data.title,
-      date: new Date.now(),
+      content: data.content,
+      date: new Date(),
     });
 
     // saves the new post
@@ -74,15 +74,15 @@ exports.createPost = async (data) => {
 /**
  * DESCRIPTION: Updates a post with a given id.
  * PARAMS: postId - id from the post to be updated.
- *         post - object with 'title' and 'body' properties.
+ *         post - object with 'title' and 'content' properties.
  * RETURNS: true if the post was found, and false otherwise.
  * THROWS: error in case of database error.
  */
 exports.updatePostById = async (postId, post) => {
   try {
-    post.date = new Date().now();
+    post.date = new Date();
     const updateResponse = await Post.updateOne(
-      { id: postId },
+      { _id: postId },
       { $set: post }
     ).exec();
 
@@ -107,7 +107,8 @@ exports.updatePostById = async (postId, post) => {
  */
 exports.deletePostById = async (postId) => {
   try {
-    const deleteResponse = await Post.deleteOne({ id: postId }).exec();
+    const deleteResponse = await Post.deleteOne({ _id: postId }).exec();
+    console.log(deleteResponse);
     return deleteResponse.deletedCount === 1;
   } catch (error) {
     // in case of error...
