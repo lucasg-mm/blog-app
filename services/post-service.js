@@ -52,7 +52,7 @@ exports.createPost = async (data) => {
     const newPost = new Post({
       title: data.title,
       content: data.content,
-      date: new Date(),
+      time: (new Date()).getTime(),
     });
 
     // saves the new post
@@ -80,7 +80,7 @@ exports.createPost = async (data) => {
  */
 exports.updatePostById = async (postId, post) => {
   try {
-    post.date = new Date();
+    post.time = (new Date()).getTime();
     const updateResponse = await Post.updateOne(
       { _id: postId },
       { $set: post }
@@ -108,7 +108,6 @@ exports.updatePostById = async (postId, post) => {
 exports.deletePostById = async (postId) => {
   try {
     const deleteResponse = await Post.deleteOne({ _id: postId }).exec();
-    console.log(deleteResponse);
     return deleteResponse.deletedCount === 1;
   } catch (error) {
     // in case of error...
