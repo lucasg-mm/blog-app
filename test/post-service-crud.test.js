@@ -57,13 +57,16 @@ describe("CRUD on the post service", () => {
     expect(readPost._id).toEqual(createdPost._id);
   });
 
+  // checks if a object with an _id property is inside
+  // a array of objects with _id properties (it checks
+  // for equality)
   test("Reads every post", async () => {
     expect.extend({
       toContainDocument(received, expectedToBeIn) {
         let pass = false;
 
         for (let i = 0; i < received.length; i++) {
-          if (_.isEqual(received[i], expectedToBeIn)) {
+          if (_.isEqual(received[i]._id, expectedToBeIn._id)) {
             pass = true;
             break;
           }
@@ -87,5 +90,32 @@ describe("CRUD on the post service", () => {
     // checks if the created post is between the posts returned
     expect(allPosts).toContainDocument(createdPost);
   });
+
+  test("Update a post", async () => {
+    const updateResponse = await postService.updatePostById(createdPost._id, {
+      title: "updated",
+    });
+
+    expect(updateResponse).toEqual(true); // returns true if it was successful
+
+    const retrievedPost = await postService.getPostById(createdPost._id); // retrieve the updated post
+
+    expect(retrievedPost.title).toEqual("updated"); // checks if title was really updated
+  });
+
+  test("Delete a post", async () => {
+    // creates a new post
+    newPost = await postService.createPost(testPost);
+
+    // deletes the new post
+    postService.deletePostById(newPost._id);
+
+    // checks if the post is there
+    const retrievedPost = await postService.getPostById(newPost._id);
+
+    // checks if the result of the retrieve is null (it must be)
+    expect(retrievedPost).toEqual(null);
+  });
+
   // ----------------------------------
 });
