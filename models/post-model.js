@@ -7,4 +7,5 @@ const postSchema = new mongoose.Schema({
   time: { type: Number, required: true },
 });
 
+// export the schema as a model
 module.exports = new mongoose.model("Post", postSchema);
