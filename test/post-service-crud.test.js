@@ -3,7 +3,7 @@
 require("dotenv").config();
 const mongoose = require("mongoose");
 const postService = require("../services/post-service");
-const _ = require("lodash");
+const toContainDocument = require("./custom-matchers/to-contain-document");
 
 describe("CRUD on the post service", () => {
   // ------------- variables used in the tests -------------
@@ -35,19 +35,24 @@ describe("CRUD on the post service", () => {
   beforeEach(async () => {
     // creates a new post
     createdPost = await postService.createPost(testPost);
+
+    // compares crested post to the test post
+    expect(createdPost).toEqual(expect.objectContaining(testPost));
   });
 
   afterEach(async () => {
     // deletes the new post
     await postService.deletePostById(createdPost._id);
+
+    // checks if the post is there
+    const retrievedPost = await postService.getPostById(createdPost._id);
+
+    // checks if the result of the retrieve is null (it must be)
+    expect(retrievedPost).toEqual(null);
   });
   // --------------------------------------------------------
 
   // ------------- tests -------------
-  test("Creates a new post", async () => {
-    // compares crested post to the test post
-    expect(createdPost).toEqual(expect.objectContaining(testPost));
-  });
 
   test("Reads a single post", async () => {
     // reads the created post by id
@@ -57,31 +62,11 @@ describe("CRUD on the post service", () => {
     expect(readPost._id).toEqual(createdPost._id);
   });
 
-  // checks if a object with an _id property is inside
-  // a array of objects with _id properties (it checks
-  // for equality)
   test("Reads every post", async () => {
+    // extends functionality with the toContainDocuement
+    // custom matcher
     expect.extend({
-      toContainDocument(received, expectedToBeIn) {
-        let pass = false;
-
-        for (let i = 0; i < received.length; i++) {
-          if (_.isEqual(received[i]._id, expectedToBeIn._id)) {
-            pass = true;
-            break;
-          }
-        }
-
-        if (pass) {
-          return {
-            pass: true,
-          };
-        } else {
-          return {
-            pass: false,
-          };
-        }
-      },
+      toContainDocument,
     });
 
     // reads every post
@@ -101,20 +86,6 @@ describe("CRUD on the post service", () => {
     const retrievedPost = await postService.getPostById(createdPost._id); // retrieve the updated post
 
     expect(retrievedPost.title).toEqual("updated"); // checks if title was really updated
-  });
-
-  test("Delete a post", async () => {
-    // creates a new post
-    newPost = await postService.createPost(testPost);
-
-    // deletes the new post
-    postService.deletePostById(newPost._id);
-
-    // checks if the post is there
-    const retrievedPost = await postService.getPostById(newPost._id);
-
-    // checks if the result of the retrieve is null (it must be)
-    expect(retrievedPost).toEqual(null);
   });
 
   // ----------------------------------

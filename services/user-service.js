@@ -26,7 +26,7 @@ exports.getAllUsers = async () => {
  */
 exports.getUserByUsername = async (username) => {
   try {
-    const foundUser = await User.find({ username: username }).exec();
+    const foundUser = await User.findOne({ username: username }).exec();
     return foundUser;
   } catch {
     console.log("DATABASE ERROR! Could not fetch this specific user.");
@@ -99,7 +99,7 @@ exports.updateUserByUsername = async (username, userData) => {
  */
 exports.deleteUserByUsername = async (username) => {
   try {
-    const deleteResponse = User.deleteOne({ username: username }).exec();
+    const deleteResponse = await User.deleteOne({ username: username }).exec();
 
     // returns true if it was deleted
     return deleteResponse.ok === 1;
