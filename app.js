@@ -2,8 +2,8 @@
 require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
-const port = 3000;
 const postRouter = require("./routes/post-routes");
+const userRouter = require("./routes/user-router")
 
 // declaring the express app
 const app = express();
@@ -28,8 +28,9 @@ mongoose
 
 // using the routes
 app.use("/posts", postRouter);
+app.use("/users", userRouter);
 
-// listening on port 3000...
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
+// listening on the port specified in the .env file
+app.listen(process.env.PORT, () => {
+  console.log(`Server running on port ${process.env.PORT}`);
 });
