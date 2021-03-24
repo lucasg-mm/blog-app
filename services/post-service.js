@@ -118,22 +118,3 @@ exports.deletePostById = async (postId) => {
     throw error;
   }
 };
-
-/**
- * DESCRIPTION: deletes a post with a given id
- * PARAMS: postId - id from the post to be deleted.
- * RETURNS: true if the posts were deleted, and false otherwise.
- * THROWS: error in case of database error.
- */
-exports.deleteAllPosts = async () => {
-  try {
-    const deleteResponse = await Post.deleteMany({}).exec();
-    return deleteResponse.ok === 1;
-  } catch (error) {
-    // in case of error...
-    console.log("DATABASE ERROR! Could not delete posts!");
-    console.log(error);
-
-    throw error;
-  }
-};
