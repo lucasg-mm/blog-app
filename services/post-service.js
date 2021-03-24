@@ -53,6 +53,7 @@ exports.createPost = async (data) => {
       title: data.title,
       content: data.content,
       time: (new Date()).getTime(),
+      authorUsername: data.authorUsername,
     });
 
     // saves the new post

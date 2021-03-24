@@ -11,6 +11,7 @@ describe("CRUD on the post service", () => {
   const testPost = {
     title: "post title",
     content: "post content",
+    authorUsername: "testuser12345jik",
   };
 
   // each test creates a new post to realize an operation

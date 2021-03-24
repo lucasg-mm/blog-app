@@ -6,7 +6,7 @@ const postSchema = new mongoose.Schema(
     title: { type: String, required: true },
     content: { type: String, required: true },
     time: { type: Number, required: true },
-    author: { type: String, ref: "User" },
+    authorUsername: { type: String, ref: "User", required: true },
   },
   {
     id: false,
