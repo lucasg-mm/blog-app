@@ -85,5 +85,13 @@ describe("CRUD on the post service", () => {
     expect(retrievedPost.title).toEqual("updated"); // checks if title was really updated
   });
 
+  test("Removes all the posts from a specific user", async () => {
+    const deleteByAuthorUsernameResponse = await postService.deletePostsByAuthorUsername(
+      createdPost.authorUsername
+    );
+
+    expect(deleteByAuthorUsernameResponse).toEqual(true);  // returns true if it was successful
+  });
+
   // ----------------------------------
 });
