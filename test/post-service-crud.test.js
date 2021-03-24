@@ -18,21 +18,14 @@ describe("CRUD on the post service", () => {
   let createdPost = {};
   // -------------------------------------------------------
 
-  // ------------- one-time setup -------------
+  // ------------- one-time setup (also tests create and delete) -------------
   beforeAll(async () => {
+    // connects to the MongoDB database
     await mongoose.connect(process.env.MONGO_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
-  });
 
-  afterAll(async () => {
-    await mongoose.disconnect();
-  });
-  // ---------------------------------------------
-
-  // ------------- repeated setup for each test -------------
-  beforeEach(async () => {
     // creates a new post
     createdPost = await postService.createPost(testPost);
 
@@ -40,7 +33,7 @@ describe("CRUD on the post service", () => {
     expect(createdPost).toEqual(expect.objectContaining(testPost));
   });
 
-  afterEach(async () => {
+  afterAll(async () => {
     // deletes the new post
     await postService.deletePostById(createdPost._id);
 
@@ -49,10 +42,13 @@ describe("CRUD on the post service", () => {
 
     // checks if the result of the retrieve is null (it must be)
     expect(retrievedPost).toEqual(null);
-  });
-  // --------------------------------------------------------
 
-  // ------------- tests -------------
+    // disconnects from the MongoDB database
+    await mongoose.disconnect();
+  });
+  // ---------------------------------------------
+
+  // ------------- other tests -------------
 
   test("Reads a single post", async () => {
     // reads the created post by id
