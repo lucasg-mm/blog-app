@@ -18,21 +18,14 @@ describe("CRUD on the user service", () => {
   // this variable holds this new user
   let createdUser = {};
 
-  // ------------- one-time setup -------------
+  // ------------- one-time setup (also tests create and delete)-------------
   beforeAll(async () => {
+    // sets MongoDB up
     await mongoose.connect(process.env.MONGO_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
-  });
 
-  afterAll(async () => {
-    await mongoose.disconnect();
-  });
-  // ---------------------------------------------
-
-  // ------------- repeated setup for each test -------------
-  beforeEach(async () => {
     // creates a new user
     createdUser = await userService.createUser(testUser);
 
@@ -40,7 +33,7 @@ describe("CRUD on the user service", () => {
     expect(createdUser).toEqual(expect.objectContaining(testUser));
   });
 
-  afterEach(async () => {
+  afterAll(async () => {
     // deletes the new user
     await userService.deleteUserByUsername(createdUser.username);
 
@@ -49,10 +42,13 @@ describe("CRUD on the user service", () => {
 
     // checks if the result of the retrieve is null (it must be)
     expect(retrievedUser).toEqual(null);
-  });
-  // --------------------------------------------------------
 
-  // ------------- tests -------------
+    // closes MongoDB connection
+    await mongoose.disconnect();
+  });
+  // ---------------------------------------------
+
+  // ------------- other tests -------------
 
   test("Reads a single user", async () => {
     // reads the created post by username
