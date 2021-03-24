@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const defaultOptions = require("./schema-default-options")();
 
 // declares the post schema
 const postSchema = new mongoose.Schema(
@@ -8,15 +9,7 @@ const postSchema = new mongoose.Schema(
     time: { type: Number, required: true },
     authorUsername: { type: String, ref: "User", required: true },
   },
-  {
-    id: false,
-    toObject: {
-      virtuals: true,
-    },
-    toJSON: {
-      virtuals: true,
-    },
-  }
+  defaultOptions
 );
 
 // export the schema as a model
