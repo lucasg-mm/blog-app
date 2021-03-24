@@ -52,7 +52,7 @@ exports.createPost = async (data) => {
     const newPost = new Post({
       title: data.title,
       content: data.content,
-      time: (new Date()).getTime(),
+      time: new Date().getTime(),
       authorUsername: data.authorUsername,
     });
 
@@ -81,7 +81,7 @@ exports.createPost = async (data) => {
  */
 exports.updatePostById = async (postId, post) => {
   try {
-    post.time = (new Date()).getTime();
+    post.time = new Date().getTime();
     const updateResponse = await Post.updateOne(
       { _id: postId },
       { $set: post }
@@ -116,5 +116,24 @@ exports.deletePostById = async (postId) => {
     console.log(error);
 
     throw error;
+  }
+};
+
+/**
+ * DESCRIPTION: deletes every post of a given author.
+ * PARAMS: authorUsername - author's username.
+ * RETURNS: true if all the posts were deleted, and false otherwise.
+ * THROWS: error in case of database error.
+ */
+exports.deletePostsByAuthorUsername = async (authorUsername) => {
+  try {
+    const deleteResponse = await Post.deleteMany({authorUsername}).exec();
+    return deleteResponse.n === deleteResponse.deletedCount;
+  } catch (error) {
+    // in case of error...
+    console.log("DATABASE ERROR! Could not delete post!");
+    console.log(error);
+
+    throw error;    
   }
 };

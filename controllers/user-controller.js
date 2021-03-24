@@ -1,4 +1,5 @@
 const userService = require("../services/user-service");
+const postService = require("../services/post-service");
 
 // --- GET ---
 
@@ -117,9 +118,17 @@ exports.apiDeleteUserByUsername = async (req, res, next) => {
   try {
     const username = req.params.username;
 
-    const deleteResponse = await userService.deleteUserByUsername(username);
+    // first, deletes every post from this user
+    const deletePostsResponse = await postService.deletePostsByAuthorUsername(username);
 
-    if (deleteResponse) {
+    if (!deletePostsResponse) {
+      res.status(500).json({message: "Could not delete user's post!"});
+    }
+
+    // then, deletes the user himself
+    const deleteUserResponse = await userService.deleteUserByUsername(username);
+
+    if (deleteUserResponse) {
       res.json({ message: "Success!" });
     } else {
       res.status(404).json({ message: "User not found" });
